@@ -1,7 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  uid:
+  uid: 1a32c23f-5c4a-4d23-b3b8-74877347b47c
   name: apicast-raphael-lab-apicast-production
   namespace: raphael-lab
   ownerReferences:
