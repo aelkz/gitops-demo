@@ -3,3 +3,4 @@ kind: Kustomization
 bases:
   - operator/base
   - instance/base
+  - patch/base

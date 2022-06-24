@@ -1,0 +1,111 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: apicast-raphael-lab-apicast-production
+  namespace: raphael-lab
+  ownerReferences:
+    - apiVersion: apps.3scale.net/v1alpha1
+      kind: APIcast
+      name: raphael-lab-apicast-production
+  labels:
+    app: apicast
+    threescale_component: apicast
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      deployment: apicast-raphael-lab-apicast-production
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        deployment: apicast-raphael-lab-apicast-production
+      annotations:
+        apicast.apps.3scale.net/admin-portal-secret-resource-version: '9547052'
+        prometheus.io/port: '9421'
+        prometheus.io/scrape: 'true'
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: '1'
+              memory: 128Mi
+            requests:
+              cpu: 500m
+              memory: 64Mi
+          readinessProbe:
+            httpGet:
+              path: /status/ready
+              port: 8090
+              scheme: HTTP
+            initialDelaySeconds: 15
+            timeoutSeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: apicast-raphael-lab-apicast-production
+          livenessProbe:
+            httpGet:
+              path: /status/live
+              port: 8090
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: THREESCALE_PORTAL_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: 3scaleportal-production
+                  key: AdminPortalURL
+            - name: THREESCALE_DEPLOYMENT_ENV
+              value: production
+            - name: APICAST_CONFIGURATION_LOADER
+              value: boot
+            - name: APICAST_LOG_LEVEL
+              value: info
+            - name: APICAST_PATH_ROUTING
+              value: 'true'
+            - name: APICAST_CONFIGURATION_CACHE
+              value: '60'
+            - name: OPENSSL_VERIFY
+              value: 'false'
+            - name: APICAST_OIDC_LOG_LEVEL
+              value: info
+            - name: APICAST_WORKERS
+              value: '2'
+            - name: TZ
+              value: America/Sao_Paulo
+            - name: APICAST_EXTENDED_METRICS
+              value: 'true'
+          ports:
+            - name: proxy
+              containerPort: 8080
+              protocol: TCP
+            - name: management
+              containerPort: 8090
+              protocol: TCP
+            - name: metrics
+              containerPort: 9421
+              protocol: TCP
+          imagePullPolicy: Always
+          terminationMessagePolicy: File
+          image: >-
+            registry.redhat.io/3scale-amp2/apicast-gateway-rhel8@sha256:f0e9f64c353fdbee3bf7ec0eaf070c3b75330ef659a881ec4ebc874ba584d085
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      serviceAccountName: default
+      serviceAccount: default
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
