@@ -1,6 +1,7 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
+  uid:
   name: apicast-raphael-lab-apicast-production
   namespace: raphael-lab
   ownerReferences:
@@ -17,11 +18,9 @@ spec:
       deployment: apicast-raphael-lab-apicast-production
   template:
     metadata:
-      creationTimestamp: null
       labels:
         deployment: apicast-raphael-lab-apicast-production
       annotations:
-        apicast.apps.3scale.net/admin-portal-secret-resource-version: '9547052'
         prometheus.io/port: '9421'
         prometheus.io/scrape: 'true'
     spec:
