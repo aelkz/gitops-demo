@@ -1,0 +1,107 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: apicast
+    threescale_component: apicast
+    ingress: internet
+  name: apicast-raphael-lab-production
+  namespace: raphael-lab
+spec:
+  host: api.middleware.rhbr-lab.com
+  port:
+    targetPort: proxy
+  tls:
+    certificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIFtjCCA54CCQCVVNSegxHD9DANBgkqhkiG9w0BAQsFADCBnDELMAkGA1UEBhMC
+      QlIxCzAJBgNVBAgMAkRGMREwDwYDVQQHDAhCcmFzaWxpYTEPMA0GA1UECgwGUmVk
+      SGF0MREwDwYDVQQLDAhTZXJ2aWNlczEkMCIGA1UEAwwbYXBpLm1pZGRsZXdhcmUu
+      cmhici1sYWIuY29tMSMwIQYJKoZIhvcNAQkBFhRuby1yZXBseUB1bmtub3duLm9y
+      ZzAeFw0yMjA2MjQxNDE0NTlaFw0zMjA2MjExNDE0NTlaMIGcMQswCQYDVQQGEwJC
+      UjELMAkGA1UECAwCREYxETAPBgNVBAcMCEJyYXNpbGlhMQ8wDQYDVQQKDAZSZWRI
+      YXQxETAPBgNVBAsMCFNlcnZpY2VzMSQwIgYDVQQDDBthcGkubWlkZGxld2FyZS5y
+      aGJyLWxhYi5jb20xIzAhBgkqhkiG9w0BCQEWFG5vLXJlcGx5QHVua25vd24ub3Jn
+      MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAsPbqhZLXYBP5pl0CMkDq
+      xOviTfrQEo4+mFwTylNezlFJWP+Btoohgvwh2sJ539MSmvF+xzLx5SFIcPYLA6Mk
+      MMQFyRwo56FpLTfYo3UCarIFLKvKYfI6PvP4iENn3njygB5OkV2BwofeAdH+bDVe
+      8oKoeZgTwTsaetu71IN41rRPNGzd07PURxyMSQLI0pDGOGywlOfXk1WqIPL8cYaN
+      G1dzXqqR8ciC0JoS7Ho50PRxT8qVbq5+fSTTCx9GK3sD/61HTnCCUvh7lYVED1PR
+      sZeAcBZdIjSE8+R7fr+q/1sPsD92wSfdbiDqMB7MVLaahlZWzHDuIEZo4LQV/Nkq
+      2SJIGeXtTycw/suiAd7oI+/WmT3qmhmiyxU/YEVjnQjAySsM6e98UZ1uz+zv84YH
+      GHCWXCk1dT9Vr+qJV9JM4FOmTolfspZ8nBoDtnh3UH4OhRDdv01Xya95FK/DM1/A
+      tSjP3tFSL2pxJTAcT6ns2DRg7Usrf5GOpNRY57N2qao/XxrzLN63iXdozi/sWxrf
+      x1W5PC8tX/EfwhjPBFVGoRZju1h67d7vUWQJC6dEs0mI+3z7laTnh7JFBEH8f8dW
+      cMTmFMi5KEDHppsFwhg+sLXUuArg1heSkvuBnbMyZ78qQd3wX8XfYFSs5hR7M0D2
+      1CH5PFjDg7oAcD+e/1uCCD8CAwEAATANBgkqhkiG9w0BAQsFAAOCAgEAbXJIyMk5
+      HZHp7hoUL9lkBNn5FSUM2xhZwz0vJm1of262OfdW0LV60jrxVC2Aw0B4796ciwAZ
+      QpEOOb/NlsCjS2TgmfZPoRZxvD4Jeif68L/5DI78Q8F46+QjTlaCqopJkcJ2JWog
+      J2hjF+UXpTXOtj41PSJP/rTCiTvUv6Zf+mJwJoIB7h2HIVZbJEcqwNQBmynwge7Y
+      5m2WDNKB1DvYTpj9UJyMNZMjoBJVt33DGf14J0EQyb4BXpG5MnI//MHD1J6MOi5z
+      AeBAypmZM2o+UJLN8yfIkSoR8frVca648K/iBiflfA/8tJGVZspjmL3+6euxloUW
+      ArjDKdy/saQaXU+6YTux7NrRX1NzDB0vbpl003TTwZMdLO2CVcJC46yvLHob7nQH
+      2B6e+Dv2yjrzK3zWBIRbrmu4XGfwFREJKK6Vo1DBl1umopjqlArdaaIXZbosePJu
+      cjJZly9DqqCoE46cTvD6w6a/GUaUKF37JmzDlSGyCDr7tQjyFQniDn6v4adqVAxd
+      Hymj4lHPzniG9GWUbebVrqXo9yMClPkHRX8+7JEtVKtW7+LBncJLw68ghlr9hw8b
+      LTlpptpGnc5pHf2qyceq7O63t7YhiNKd/NhRC/2898LgpaoNlSWJZbPxZdi+8elB
+      ktpDS0vvWs4wmrvYfOgdaXziUpidwfRcn9A=
+      -----END CERTIFICATE-----
+    insecureEdgeTerminationPolicy: Redirect
+    key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      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
+      -----END RSA PRIVATE KEY-----
+    termination: edge
+  to:
+    kind: Service
+    name: raphael-lab-apicast-production
+    weight: 100
+  wildcardPolicy: None

@@ -1,0 +1,19 @@
+apiVersion: apps.3scale.net/v1alpha1
+kind: APIcast
+metadata:
+  name: raphael-lab-apicast-production
+  namespace: raphael-lab
+spec:
+  logLevel: info
+  pathRoutingEnabled: true
+  openSSLPeerVerificationEnabled: false
+  extendedMetrics: true
+  cacheConfigurationSeconds: 60
+  deploymentEnvironment: production
+  adminPortalCredentialsRef:
+    name: 3scaleportal-production
+  workers: 2
+  oidcLogLevel: info
+  timezone: America/Sao_Paulo
+  replicas: 2
+  configurationLoadMode: boot

@@ -1,0 +1,8 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: apicast-raphael-lab
+  namespace: raphael-lab
+spec:
+  targetNamespaces:
+  - raphael-lab
