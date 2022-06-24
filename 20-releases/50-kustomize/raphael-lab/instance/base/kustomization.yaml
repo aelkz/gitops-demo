@@ -8,5 +8,3 @@ resources:
   - raphael-lab-apicast-production-route.yaml
 patches:
   - raphael-lab-apicast-production-patch.yaml
-    target:
-      namespace: raphael-lab
