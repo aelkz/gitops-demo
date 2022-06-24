@@ -6,7 +6,7 @@ resources:
   - raphael-lab-apicast-production-secret.yaml
   - raphael-lab-apicast-production.yaml
   - raphael-lab-apicast-production-route.yaml
-patchesStrategicMerge:
+patches:
   - raphael-lab-apicast-production-patch.yaml
     target:
       namespace: raphael-lab
