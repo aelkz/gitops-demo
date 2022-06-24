@@ -8,3 +8,5 @@ resources:
   - raphael-lab-apicast-production-route.yaml
 patchesStrategicMerge:
   - raphael-lab-apicast-production-patch.yaml
+    target:
+      namespace: raphael-lab
