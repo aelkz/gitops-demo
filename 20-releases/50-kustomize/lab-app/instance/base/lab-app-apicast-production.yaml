@@ -1,8 +1,8 @@
 apiVersion: apps.3scale.net/v1alpha1
 kind: APIcast
 metadata:
-  name: raphael-lab-apicast-production
-  namespace: raphael-lab
+  name: lab-app-apicast-production
+  namespace: lab-app
 spec:
   logLevel: info
   pathRoutingEnabled: true

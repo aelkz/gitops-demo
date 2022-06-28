@@ -2,8 +2,8 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription 
 metadata: 
   name: apicast-operator
-  namespace: raphael-lab
-spec: 
+  namespace: lab-app
+spec:
   channel: threescale-2.11
   installPlanApproval: Automatic
   name: apicast-operator

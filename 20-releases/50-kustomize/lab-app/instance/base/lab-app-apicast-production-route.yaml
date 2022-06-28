@@ -5,8 +5,8 @@ metadata:
     app: apicast
     threescale_component: apicast
     ingress: internet
-  name: apicast-raphael-lab-production
-  namespace: raphael-lab
+  name: apicast-production
+  namespace: lab-app
 spec:
   host: api.middleware.rhbr-lab.com
   port:
@@ -102,6 +102,6 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: raphael-lab-apicast-production
+    name: lab-app-apicast-production
     weight: 100
   wildcardPolicy: None
