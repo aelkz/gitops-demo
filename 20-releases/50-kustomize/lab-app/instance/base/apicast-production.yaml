@@ -1,7 +1,7 @@
 apiVersion: apps.3scale.net/v1alpha1
 kind: APIcast
 metadata:
-  name: lab-app-apicast-production
+  name: apicast-production
   namespace: lab-app
 spec:
   logLevel: info
