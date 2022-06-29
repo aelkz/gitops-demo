@@ -3,6 +3,6 @@ kind: Kustomization
 metadata:
   namespace: lab-app
 resources:
-  - lab-app-apicast-production-secret.yaml
-  - lab-app-apicast-production.yaml
-  - lab-app-apicast-production-route.yaml
+  - apicast-production-secret.yaml
+  - apicast-production.yaml
+  - apicast-production-route.yaml
