@@ -9,3 +9,4 @@ spec:
   name: apicast-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
+  startingCSV: 3scale-operator.v0.8.4
