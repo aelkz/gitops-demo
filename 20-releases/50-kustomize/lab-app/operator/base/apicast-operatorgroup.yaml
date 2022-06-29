@@ -1,7 +1,7 @@
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
-  name: lab-app
+  name: apicast-operator-group
   namespace: lab-app
 spec:
   targetNamespaces:
