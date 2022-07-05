@@ -26,53 +26,21 @@ oc delete project $APP_NS ; oc new-project $APP_NS --description="Application de
 
 ```
 export ARGOCD_NS=lab-argocd
+export ARGOCD_INSTANCE_NAME=gitops
 export APP_NS=lab-app
 export APP_NAME=app-3scale-apicast-gitops
 
 oc delete project $ARGOCD_NS ; oc new-project $ARGOCD_NS --description="GitOps Tools" --display-name="GitOps Tools"
 ```
 
-### 03 Install Red Hat OpenShift GitOps subscription
-
-`TODO:` channel: stable or latest?
-
-```
-cat > subscription.yaml <<EOL
-apiVersion: operators.coreos.com/v1alpha1
-kind: Subscription
-metadata:
-labels:
-operators.coreos.com/openshift-gitops-operator.openshift-operators: ''
-manager: catalog
-operation: Update
-subresource: status
-name: openshift-gitops-operator
-namespace: $ARGOCD_NS
-spec:
-channel: stable
-installPlanApproval: Automatic
-name: openshift-gitops-operator
-source: redhat-operators
-sourceNamespace: openshift-marketplace
-startingCSV: openshift-gitops-operator.v1.5.3
-config:
-env:
-- name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
-value: lab-argocd
-EOL
-oc apply -f subscription.yaml -n $ARGOCD_NS
-```
-
-`TODO:` `ARGOCD_CLUSTER_CONFIG_NAMESPACES` env need to point out the namespace where ArgoCD will be running. See: https://github.com/argoproj/argo-cd/issues/5886
-
-### 04 Deploy ArgoCD
+### 03 Deploy ArgoCD into `$ARGOCD_NS`
 
 ```
 cat > argocd.yaml <<EOL
 apiVersion: argoproj.io/v1alpha1
 kind: ArgoCD
 metadata:
-  name: argocd
+  name: $ARGOCD_INSTANCE_NAME
   namespace: $ARGOCD_NS
 spec:
   controller:
@@ -141,14 +109,33 @@ oc apply -f argocd.yaml -n $ARGOCD_NS
 ### 05 Assign role to ArgoCD service account
 
 ```
-oc get sa ; oc policy add-role-to-user cluster-admin system:serviceaccount:$ARGOCD_NS:argocd-argocd-application-controller -n $ARGOCD_NS
-oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:$ARGOCD_NS:argocd-argocd-application-controller -n $ARGOCD_NS
+oc get sa -n $ARGOCD_NS
+NAME                                   SECRETS   AGE
+builder                                2         6m37s
+default                                2         6m37s
+deployer                               2         6m37s
+gitops-argocd-application-controller   2         12s
+gitops-argocd-dex-server               2         12s
+gitops-argocd-redis-ha                 2         12s
+gitops-argocd-server                   2         12s
+```
+then:
+```
+oc get sa ; oc policy add-role-to-user cluster-admin system:serviceaccount:$ARGOCD_NS:$ARGOCD_INSTANCE_NAME-argocd-application-controller -n $ARGOCD_NS
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:$ARGOCD_NS:$ARGOCD_INSTANCE_NAME-argocd-application-controller -n $ARGOCD_NS
 ```
 
 Global cluster write permissions (`cluster-admin`) is not allowed for an operator to be included in the OpenShift Operator Hub.<br>
 This is why the decision was made to ship the operator with cluster `read` permissions only and can be overridden by the user using the documentation referenced above if `cluster-admin` is something you need.
 
-### 06 Create a new application
+### 06 Open ArgoCD console
+```
+oc get secret $ARGOCD_INSTANCE_NAME-cluster -o json -n $ARGOCD_NS | jq -r '.data."admin.password"' | base64 --decode ; ARGOCD_SERVER_URL=$(oc get routes -n $ARGOCD_NS | grep $ARGOCD_INSTANCE_NAME-server | awk '{print $2}') ; echo '\nhttps://'$ARGOCD_SERVER_URL'\n'
+```
+
+PS. `oc extract secret/argocd-cluster -n $ARGOCD_NS --to=-` should work too.
+
+### 07 Create a new application
 
 ```
 oc delete Application/$APP_NAME ;
@@ -178,12 +165,11 @@ EOL
 oc apply -f argocd-application.yaml -n $ARGOCD_NS
 ```
 
-### 06 Open ArgoCD console
-```
-oc get secret argocd-cluster -o json -n $ARGOCD_NS | jq -r '.data."admin.password"' | base64 --decode ; ARGOCD_SERVER_URL=$(oc get routes -n $ARGOCD_NS | grep argocd-server | awk '{print $2}') ; echo '\nhttps://'$ARGOCD_SERVER_URL'\n'
-```
+### Troubleshooting: Namespace "lab-app" for Secret "3scaleportal-production" is not managed
 
-PS. `oc extract secret/argocd-cluster -n $ARGOCD_NS --to=-` should work too.
+![01](_images/001.png)
+
+![02](_images/002.png)
 
 #### PKCS#8 key (used for attaching certificate into routes)
 
