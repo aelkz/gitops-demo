@@ -2,9 +2,9 @@
 `ArgoCD` `Red Hat OpenShift GitOps`
 
 ## Installation
-from Red Hat:
 
 ### What is GitOps?
+from Red Hat:<br>
 GitOps is a set of DevOps practices that are used to manage infrastructure and application configurations using the Git open source version control system as a "single source of truth," and is widely used with Kubernetes.
 At its core, GitOps maintains that a system must have its desired state expressed declaratively, and that the desired state is versioned and immutable, pulled automatically, and continuously reconciled.
 GitOps provides an array of benefits, including standardizing workflows, simplifying tool sets, reducing potential variables and errors, increasing developer productivity, and more.
@@ -16,13 +16,13 @@ Put simply, ArgoCD is an easy to use tool that allows development teams to deplo
 https://www.redhat.com/en/blog/argocd-and-gitops-whats-next<br>
 https://argoproj.github.io/cd/
 
-### GitOps managed project
+### 01 GitOps managed project
 
 ```
 oc delete project $APP_NS ; oc new-project $APP_NS --description="Application demo managed by GitOps" --display-name="Application demo managed by GitOps"
 ```
 
-## Red Hat OpenShift GitOps operator
+### 02 Red Hat OpenShift GitOps project
 
 ```
 export ARGOCD_NS=lab-argocd
@@ -32,7 +32,115 @@ export APP_NAME=app-3scale-apicast-gitops
 oc delete project $ARGOCD_NS ; oc new-project $ARGOCD_NS --description="GitOps Tools" --display-name="GitOps Tools"
 ```
 
-#### PKCS#8 key (api.middleware.rhbr-lab.com)
+### 03 Install Red Hat OpenShift GitOps subscription
+
+`TODO`
+# channel: stable or latest?
+
+```
+cat > subscription.yaml <<EOL
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+labels:
+operators.coreos.com/openshift-gitops-operator.openshift-operators: ''
+manager: catalog
+operation: Update
+subresource: status
+name: openshift-gitops-operator
+namespace: $ARGOCD_NS
+spec:
+channel: stable
+installPlanApproval: Automatic
+name: openshift-gitops-operator
+source: redhat-operators
+sourceNamespace: openshift-marketplace
+startingCSV: openshift-gitops-operator.v1.5.3
+config:
+env:
+- name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
+value: lab-argocd
+EOL
+oc apply -f subscription.yaml -n $ARGOCD_NS
+```
+
+`TODO`
+`ARGOCD_CLUSTER_CONFIG_NAMESPACES` env need to point out the namespace where ArgoCD will be running. See: https://github.com/argoproj/argo-cd/issues/5886
+
+### 04 Deploy ArgoCD
+
+```
+cat > argocd.yaml <<EOL
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: argocd
+  namespace: $ARGOCD_NS
+spec:
+  controller:
+    processors: {}
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 2048Mi
+      requests:
+        cpu: 512m
+        memory: 1Gi
+  dex:
+    openShiftOAuth: true
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+  ha:
+    enabled: false
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+  rbac:
+    defaultPolicy: ''
+    policy: |
+      g, system:cluster-admins, role:admin
+    scopes: '[groups]'
+  redis:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+  repo:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 512m
+        memory: 512Mi
+  server:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 500m
+        memory: 256Mi
+    route:
+      enabled: true
+  usersAnonymousEnabled: true
+EOL
+oc apply -f argocd.yaml -n $ARGOCD_NS
+```
+
+#### PKCS#8 key (used for attaching certificate into routes)
 
 ```
 openssl req -x509 -utf8 -sha256 -days 3650 -newkey rsa:4096 -keyout key.pem -out cert.pem -nodes
