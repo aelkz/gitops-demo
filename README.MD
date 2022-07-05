@@ -34,8 +34,7 @@ oc delete project $ARGOCD_NS ; oc new-project $ARGOCD_NS --description="GitOps T
 
 ### 03 Install Red Hat OpenShift GitOps subscription
 
-`TODO`
-# channel: stable or latest?
+`TODO:` channel: stable or latest?
 
 ```
 cat > subscription.yaml <<EOL
@@ -64,8 +63,7 @@ EOL
 oc apply -f subscription.yaml -n $ARGOCD_NS
 ```
 
-`TODO`
-`ARGOCD_CLUSTER_CONFIG_NAMESPACES` env need to point out the namespace where ArgoCD will be running. See: https://github.com/argoproj/argo-cd/issues/5886
+`TODO:` `ARGOCD_CLUSTER_CONFIG_NAMESPACES` env need to point out the namespace where ArgoCD will be running. See: https://github.com/argoproj/argo-cd/issues/5886
 
 ### 04 Deploy ArgoCD
 
