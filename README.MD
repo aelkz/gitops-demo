@@ -187,6 +187,17 @@ oc label ns $APP_NS argocd.argoproj.io/managed-by=$ARGOCD_NS
   apicast-operator, subscription apicast-operator exists
 ```
 
+solution:
+```
+change apicast-subscription.yaml startingCSV attribute to apicast-operator.v0.5.3
+```
+
+then `refresh` and `sync` again on ArgoCD console.
+
+### 08 Check if all components was properly deployed into $LAB_NS
+
+![03](_images/003.png)
+
 #### PKCS#8 key (used for attaching certificate into routes)
 
 ```
