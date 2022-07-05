@@ -172,6 +172,21 @@ oc apply -f argocd-application.yaml -n $ARGOCD_NS
 
 ![02](_images/002.png)
 
+solution:
+```
+oc label ns $APP_NS argocd.argoproj.io/managed-by=$ARGOCD_NS
+```
+
+### Troubleshooting:
+#### Degraded component
+```
+- message: >-
+  constraints not satisfiable: no operators found with name
+  3scale-operator.v0.8.4 in channel threescale-2.11 of package
+  apicast-operator in the catalog referenced by subscription
+  apicast-operator, subscription apicast-operator exists
+```
+
 #### PKCS#8 key (used for attaching certificate into routes)
 
 ```
