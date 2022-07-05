@@ -165,7 +165,8 @@ EOL
 oc apply -f argocd-application.yaml -n $ARGOCD_NS
 ```
 
-### Troubleshooting: Namespace "lab-app" for Secret "3scaleportal-production" is not managed
+### Troubleshooting: 
+#### Namespace "lab-app" for Secret "3scaleportal-production" is not managed
 
 ![01](_images/001.png)
 
