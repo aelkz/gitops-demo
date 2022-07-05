@@ -138,6 +138,53 @@ EOL
 oc apply -f argocd.yaml -n $ARGOCD_NS
 ```
 
+### 05 Assign role to ArgoCD service account
+
+```
+oc get sa ; oc policy add-role-to-user cluster-admin system:serviceaccount:$ARGOCD_NS:argocd-argocd-application-controller -n $ARGOCD_NS
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:$ARGOCD_NS:argocd-argocd-application-controller -n $ARGOCD_NS
+```
+
+Global cluster write permissions (`cluster-admin`) is not allowed for an operator to be included in the OpenShift Operator Hub.<br>
+This is why the decision was made to ship the operator with cluster `read` permissions only and can be overridden by the user using the documentation referenced above if `cluster-admin` is something you need.
+
+### 06 Create a new application
+
+```
+oc delete Application/$APP_NAME ;
+cat > argocd-application.yaml <<EOL
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-3scale-apicast-gitops
+  namespace: $ARGOCD_NS
+spec:
+  destination:
+    namespace: $APP_NS
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    path: './20-releases/50-kustomize/lab-app/'
+    repoURL: 'https://github.com/aelkz/gitops-demo.git'
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - Validate=false
+      - PruneLast=true
+EOL
+oc apply -f argocd-application.yaml -n $ARGOCD_NS
+```
+
+### 06 Open ArgoCD console
+```
+oc get secret argocd-cluster -o json -n $ARGOCD_NS | jq -r '.data."admin.password"' | base64 --decode ; ARGOCD_SERVER_URL=$(oc get routes -n $ARGOCD_NS | grep argocd-server | awk '{print $2}') ; echo '\nhttps://'$ARGOCD_SERVER_URL'\n'
+```
+
+PS. `oc extract secret/argocd-cluster -n $ARGOCD_NS --to=-` should work too.
+
 #### PKCS#8 key (used for attaching certificate into routes)
 
 ```
