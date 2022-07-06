@@ -57,7 +57,7 @@ EOL
 oc apply -f subscription.yaml -n $ARGOCD_NS
 ```
 
-### 03 Deploy ArgoCD into `$ARGOCD_NS`
+### 04 Deploy ArgoCD into `$ARGOCD_NS`
 
 ```
 cat > argocd.yaml <<EOL
@@ -218,9 +218,18 @@ change apicast-subscription.yaml startingCSV attribute to apicast-operator.v0.5.
 
 then `refresh` and `sync` again on ArgoCD console.
 
+![04](_images/004.png)
+
 ### 08 Check if all components was properly deployed into $LAB_NS
 
 ![03](_images/003.png)
+
+### 09 Create APICast secret and SSL certificate
+
+PS. Refer to the 3Scale documentation for creating a new APICast service token at:<br>
+https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.10/html/installing_3scale/installing-apicast#deploying-apicast-gateway-self-managed-operator
+https://github.com/3scale/apicast-operator/blob/3scale-2.10-stable/doc/apicast-crd-reference.md#AdminPortalSecret<br>
+https://github.com/3scale/apicast-operator/blob/master/doc/quickstart-guide.md
 
 #### PKCS#8 key (used for attaching certificate into routes)
 
@@ -228,8 +237,12 @@ then `refresh` and `sync` again on ArgoCD console.
 openssl req -x509 -utf8 -sha256 -days 3650 -newkey rsa:4096 -keyout key.pem -out cert.pem -nodes
 ```
 
-#### PKCS#8 to PKCS#1
+#### Convert PKCS#8 to PKCS#1 (to use at OpenShift APICast exposed route)
 
 ```
 openssl rsa -in key.pem -out key.pem
 ```
+
+### See the full application deployed into ArgoCD
+
+![05](_images/005.png)
