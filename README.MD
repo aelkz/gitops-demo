@@ -230,13 +230,13 @@ https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.10
 https://github.com/3scale/apicast-operator/blob/3scale-2.10-stable/doc/apicast-crd-reference.md#AdminPortalSecret<br>
 https://github.com/3scale/apicast-operator/blob/master/doc/quickstart-guide.md
 
-#### PKCS#8 key (used for attaching certificate into routes)
+#### Generate PKCS#8 pub and key
 
 ```
 openssl req -x509 -utf8 -sha256 -days 3650 -newkey rsa:4096 -keyout key.pem -out cert.pem -nodes
 ```
 
-#### Convert PKCS#8 to PKCS#1 (to use at OpenShift APICast exposed route)
+#### Convert PKCS#8 key to PKCS#1 (to use at OpenShift APICast exposed route)
 
 ```
 openssl rsa -in key.pem -out key.pem
