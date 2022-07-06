@@ -33,6 +33,30 @@ export APP_NAME=app-3scale-apicast-gitops
 oc delete project $ARGOCD_NS ; oc new-project $ARGOCD_NS --description="GitOps Tools" --display-name="GitOps Tools"
 ```
 
+### 03 Red Hat OpenShift GitOps operator subscription (optional)
+
+*WARNING*: This step is entirely optional if you already have the subscription installed at `openshift-operators` namespace.
+
+```
+cat > subscription.yaml <<EOL
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  labels:
+    operators.coreos.com/openshift-gitops-operator.openshift-operators: ""
+  name: openshift-gitops-operator
+  namespace: openshift-operators
+spec:
+  channel: latest
+  installPlanApproval: Automatic
+  name: openshift-gitops-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: openshift-gitops-operator.v1.5.4
+EOL
+oc apply -f subscription.yaml -n $ARGOCD_NS
+```
+
 ### 03 Deploy ArgoCD into `$ARGOCD_NS`
 
 ```
