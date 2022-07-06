@@ -12,7 +12,7 @@ GitOps provides an array of benefits, including standardizing workflows, simplif
 ### What is ArgoCD?
 Put simply, ArgoCD is an easy to use tool that allows development teams to deploy and manage applications without having to learn a lot about Kubernetes, and without needing full access to the Kubernetes system. This hugely simplifies the process of running applications in Kubernetes, ultimately leading to better security and increased developer productivity.
 
-`source`<br>
+`sources`<br>
 https://www.redhat.com/en/blog/argocd-and-gitops-whats-next<br>
 https://argoproj.github.io/cd/
 
@@ -189,7 +189,7 @@ EOL
 oc apply -f argocd-application.yaml -n $ARGOCD_NS
 ```
 
-### Troubleshooting: 
+### Troubleshooting:
 #### Namespace "lab-app" for Secret "3scaleportal-production" is not managed
 
 ![01](_images/001.png)
@@ -218,16 +218,15 @@ change apicast-subscription.yaml startingCSV attribute to apicast-operator.v0.5.
 
 then `refresh` and `sync` again on ArgoCD console.
 
-![04](_images/004.png)
-
 ### 08 Check if all components was properly deployed into $LAB_NS
 
 ![03](_images/003.png)
 
 ### 09 Create APICast secret and SSL certificate
 
-PS. Refer to the 3Scale documentation for creating a new APICast service token at:<br>
-https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.10/html/installing_3scale/installing-apicast#deploying-apicast-gateway-self-managed-operator
+PS. Refer to the 3Scale documentation for creating a new APICast service token<br>
+`sources`<br>
+https://access.redhat.com/documentation/en-us/red_hat_3scale_api_management/2.10/html/installing_3scale/installing-apicast#deploying-apicast-gateway-self-managed-operator<br>
 https://github.com/3scale/apicast-operator/blob/3scale-2.10-stable/doc/apicast-crd-reference.md#AdminPortalSecret<br>
 https://github.com/3scale/apicast-operator/blob/master/doc/quickstart-guide.md
 
