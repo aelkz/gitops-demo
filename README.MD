@@ -218,6 +218,8 @@ change apicast-subscription.yaml startingCSV attribute to apicast-operator.v0.5.
 
 then `refresh` and `sync` again on ArgoCD console.
 
+![04](_images/004.png)
+
 ### 08 Check if all components was properly deployed into $LAB_NS
 
 ![03](_images/003.png)
